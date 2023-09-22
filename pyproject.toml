@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "video-stream"
+version = "0.1.0"
+description = ""
+authors = ["kengenal <kengenal1@gmail.com>"]
+readme = "README.md"
+packages = [{include = "video_stream"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.103.1"
+uvicorn = "^0.23.2"
+sqlalchemy = "^2.0.20"
+alembic = "^1.12.0"
+pydantic-settings = "^2.0.3"
+argon2-cffi = "^23.1.0"
+pyjwt = "^2.8.0"
+python-multipart = "^0.0.6"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.2"
+httpx = "^0.25.0"
+pytest-env = "^1.0.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
