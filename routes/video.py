@@ -6,8 +6,9 @@ from sqlalchemy.orm import Session
 from config.database import get_db
 from config.settings import Settings, get_settings
 from dependencies.auth_dependencies import get_user
+from models.serializers import VideoIndexSerializer
 from models.sqlmodels import User
-from repositories.video_repository import index_videos
+from repositories.video_repository import get_video_index, index_videos
 
 router = APIRouter()
 
@@ -16,8 +17,10 @@ router = APIRouter()
 async def get_videos(
     user: Annotated[User, Depends(get_user)],
     db: Session = Depends(get_db),
+    q: str | None = None,
 ):
-    return {"test": user.username}
+    items = get_video_index(db=db, q=q)
+    return {"results": [VideoIndexSerializer.from_orm(x) for x in items]}
 
 
 @router.get("/videos/index/")

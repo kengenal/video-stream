@@ -29,8 +29,7 @@ def client() -> TestClient:
 def create_test_table_end_remove_after_test():
     Base.metadata.create_all(engine)
     yield
-    pass
-    # Base.metadata.drop_all(engine)
+    Base.metadata.drop_all(engine)
 
 
 @pytest.fixture

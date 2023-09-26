@@ -12,9 +12,11 @@ from models.sqlmodels import VideoIndex
 
 class TestVideoIndex:
     @pytest.fixture(autouse=True)
-    def setup(self, settings: Settings):
+    def variables(self, settings: Settings):
         self.path = settings.video_path
         self.url = "/api/v1/videos/index/"
+        yield
+        shutil.rmtree(self.path)
 
     def test_index_file_only_one_file(self, auth_client: TestClient, db: Session):
         self._create_file("test.mp4")
@@ -43,17 +45,55 @@ class TestVideoIndex:
         with open(os.path.join(self.path, filename), "w") as f:
             f.write("FOOBAR")
 
-    def teardown(self):
-        shutil.rmtree(self.path)
-
 
 class TestVideo:
-    def setup(self):
+    @pytest.fixture(autouse=True)
+    def variables(self):
         self.url = "/api/v1/videos/"
 
     def test_get_video(self, auth_client: TestClient, db: Session):
-        request = auth_client.get(self.url)
+        db.add(VideoIndex(slug="test", name="test", full_path="test.mp4", prefix="mp4"))
+        db.commit()
 
+        request = auth_client.get(self.url)
+        assert request.json() == {
+            "results": [
+                {
+                    "id": 1,
+                    "slug": "test",
+                    "name": "test",
+                    "full_path": "test.mp4",
+                    "prefix": "mp4",
+                }
+            ]
+        }
+        assert request.status_code == status.HTTP_200_OK
+
+    def test_get_video_wht_search_query(self, auth_client: TestClient, db: Session):
+        db.add_all(
+            [
+                VideoIndex(
+                    slug="test", name="test", full_path="test.mp4", prefix="mp4"
+                ),
+                VideoIndex(
+                    slug="test2", name="test2", full_path="test2.mp4", prefix="mp4"
+                ),
+            ]
+        )
+        db.commit()
+
+        request = auth_client.get(self.url + "?q=test2")
+        assert request.json() == {
+            "results": [
+                {
+                    "id": 2,
+                    "slug": "test2",
+                    "name": "test2",
+                    "full_path": "test2.mp4",
+                    "prefix": "mp4",
+                }
+            ]
+        }
         assert request.status_code == status.HTTP_200_OK
 
     def test_get_user_but_user_is_not_authenticated(
