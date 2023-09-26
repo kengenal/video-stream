@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     password_secret: str
     token_secret: str
     algorytm: str = "HS256"
+    video_path: str
 
 
 class DevSettings(Settings):
@@ -23,6 +24,7 @@ class DevSettings(Settings):
     password_secret: str = "test"
     token_secret: str = "test"
     algorytm: str = "HS256"
+    video_path: str
 
 
 class ProdSettings(Settings):
@@ -34,6 +36,7 @@ class TestSettings(Settings):
     password_secret: str
     token_secret: str
     algorytm: str = "HS256"
+    video_path: str = "/tmp/test"
 
 
 @lru_cache

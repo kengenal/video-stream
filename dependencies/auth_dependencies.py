@@ -10,9 +10,7 @@ from repositories.user_repository import get_user_by_public_id
 from utils.hasher import HasherJwt
 from utils.hasher_exceptions import ThisIsNotCorrectTokenException
 
-oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl="api/v1/token"
-)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/token")
 
 
 async def get_user(
@@ -20,18 +18,12 @@ async def get_user(
     token: Annotated[str, Depends(oauth2_scheme)],
     db: Session = Depends(get_db),
 ):
-
-    hasher = HasherJwt(
-        secret=settings.token_secret,
-        algorithm=settings.algorytm
-    )
+    hasher = HasherJwt(secret=settings.token_secret, algorithm=settings.algorytm)
     try:
         public_id = hasher.make_unsecret(token=token)
         user = get_user_by_public_id(db=db, public_id=public_id)
         if not user:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED
-            )
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
         return user
 
     except ThisIsNotCorrectTokenException:

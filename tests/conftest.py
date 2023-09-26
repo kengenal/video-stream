@@ -3,16 +3,12 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session, sessionmaker
 
 from config.database import Base, engine, get_db
-from config.settings import get_settings
+from config.settings import Settings, get_settings
 from main import app
 from models.sqlmodels import User
 from utils.hasher import HasherJwt
 
-TestingSessionLocal = sessionmaker(
-    autocommit=False,
-    autoflush=False,
-    bind=engine
-)
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 def override_get_db():
@@ -33,7 +29,8 @@ def client() -> TestClient:
 def create_test_table_end_remove_after_test():
     Base.metadata.create_all(engine)
     yield
-    Base.metadata.drop_all(engine)
+    pass
+    # Base.metadata.drop_all(engine)
 
 
 @pytest.fixture
@@ -53,7 +50,10 @@ def auth_client(client: TestClient, db: Session):
         secret=settings.token_secret,
     )
     token = hasher.make_secret(user.public_id)
-    client.headers = {
-        "Authorization": f"Bearer {token}"
-    }
+    client.headers = {"Authorization": f"Bearer {token}"}
     return client
+
+
+@pytest.fixture
+def settings() -> Settings:
+    return get_settings()

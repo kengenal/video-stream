@@ -4,8 +4,7 @@ import jwt
 import pytest
 
 from utils.hasher import HasherJwt, HasherPassword
-from utils.hasher_exceptions import (ThisIsNotCorrectTokenException,
-                                     UuidException)
+from utils.hasher_exceptions import ThisIsNotCorrectTokenException, UuidException
 
 
 class TestHashPassword:
@@ -24,7 +23,6 @@ class TestHashPassword:
         assert self.hasher.check("test2", random_password_hash) is False
 
     def test_verify_with_correct_password(self):
-
         correct_hash = self.hasher.make_secret("test")
         assert self.hasher.check(correct_hash, "test") is True
 

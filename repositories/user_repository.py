@@ -13,9 +13,7 @@ def get_user_by_public_id(db: Session, public_id: str) -> Optional[User]:
 
 
 def user_can_be_authentication(
-        db: Session,
-        username: str,
-        password: str
+    db: Session, username: str, password: str
 ) -> Optional[User]:
     user = db.query(User).filter(User.username == username).first()
     if not user:

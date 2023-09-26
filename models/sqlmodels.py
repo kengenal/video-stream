@@ -32,3 +32,12 @@ class User(Base):
 
 class VideoIndex(Base):
     __tablename__ = "video_index"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    slug: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(255))
+    full_path: Mapped[str] = mapped_column(String(255))
+    prefix: Mapped[str] = mapped_column(String(20))
+
+    def __repl__(self):
+        return self.name

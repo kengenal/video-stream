@@ -20,15 +20,13 @@ class UserModel(BaseModel):
 
 @router.post("/token/")
 async def create_token(
-        user: UserModel,
-        settings: Annotated[Settings, Depends(get_settings)],
-        db: Session = Depends(get_db),
+    user: UserModel,
+    settings: Annotated[Settings, Depends(get_settings)],
+    db: Session = Depends(get_db),
 ):
     try:
         can_be_auth = user_can_be_authentication(
-            db=db,
-            username=user.username,
-            password=user.password
+            db=db, username=user.username, password=user.password
         )
         if can_be_auth is None:
             raise HTTPException(
@@ -36,15 +34,11 @@ async def create_token(
                 detail="Invalid credentials",
             )
         token_creator = HasherJwt(
-            algorithm=settings.algorytm,
-            secret=settings.token_secret
+            algorithm=settings.algorytm, secret=settings.token_secret
         )
 
-        return {"token": token_creator.make_secret(
-            public_id=can_be_auth.public_id
-        )}
+        return {"token": token_creator.make_secret(public_id=can_be_auth.public_id)}
     except UuidException:
         raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail="Something goes wrong"
+            status_code=status.HTTP_502_BAD_GATEWAY, detail="Something goes wrong"
         )

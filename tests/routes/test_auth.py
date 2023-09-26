@@ -11,30 +11,21 @@ class TestToken:
     def setup(self):
         self.url = "/api/v1/token/"
 
-    def test_atuh_token_with_correct_credentials(
-            self,
-            client: TestClient,
-            db: Session
-    ):
+    def test_atuh_token_with_correct_credentials(self, client: TestClient, db: Session):
         user = self._create_user(db, "test", "test")
-        request = client.post(self.url, json={
-            "username": user.username,
-            "password": "test"
-        })
+        request = client.post(
+            self.url, json={"username": user.username, "password": "test"}
+        )
         assert request.status_code == status.HTTP_200_OK
         assert request.json() == {"token": ANY}
         assert len(request.json()["token"]) > 10
 
-    def test_auth_with_incorrect_credentials(
-            self, client: TestClient,
-            db: Session
-    ):
+    def test_auth_with_incorrect_credentials(self, client: TestClient, db: Session):
         self._create_user(db, "test", "test")
 
-        request = client.post(self.url, json={
-            "username": "test",
-            "password": "random_incorrect_password"
-        })
+        request = client.post(
+            self.url, json={"username": "test", "password": "random_incorrect_password"}
+        )
 
         assert request.status_code == status.HTTP_400_BAD_REQUEST
 
