@@ -1,4 +1,4 @@
-from pydantic.main import BaseModel
+from pydantic.main import BaseModel, ConfigDict
 
 
 class VideoIndexSerializer(BaseModel):
@@ -8,5 +8,4 @@ class VideoIndexSerializer(BaseModel):
     full_path: str
     prefix: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

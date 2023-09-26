@@ -1,13 +1,18 @@
 import os
 import shutil
 
+import pytest
+
 from utils.file_loader import VideosFileLoader
 
 
 class TestVideosLoader:
-    def setup(self):
+    @pytest.fixture(autouse=True)
+    def variables(self):
         self.path = "test_glob"
         self.file_loader = VideosFileLoader(self.path)
+        yield
+        shutil.rmtree(self.path)
 
     def test_load_video_with_existing_file_structure(self):
         self._create_file("test.mp4")
@@ -52,6 +57,3 @@ class TestVideosLoader:
             os.mkdir(self.path)
         with open(os.path.join(self.path, filename), "w") as f:
             f.write("FOOBAR")
-
-    def teardown(self):
-        shutil.rmtree(self.path)

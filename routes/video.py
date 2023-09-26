@@ -20,7 +20,7 @@ async def get_videos(
     q: str | None = None,
 ):
     items = get_video_index(db=db, q=q)
-    return {"results": [VideoIndexSerializer.from_orm(x) for x in items]}
+    return {"results": [VideoIndexSerializer.model_validate(x) for x in items]}
 
 
 @router.get("/videos/index/")

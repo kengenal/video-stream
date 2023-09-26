@@ -4,11 +4,13 @@ import jwt
 import pytest
 
 from utils.hasher import HasherJwt, HasherPassword
-from utils.hasher_exceptions import ThisIsNotCorrectTokenException, UuidException
+from utils.hasher_exceptions import (ThisIsNotCorrectTokenException,
+                                     UuidException)
 
 
 class TestHashPassword:
-    def setup(self):
+    @pytest.fixture(autouse=True)
+    def variables(self):
         self.hasher = HasherPassword(salt="correct horse battery staple")
 
     def test_hash_password(self):
@@ -31,7 +33,8 @@ class TestHashPassword:
 
 
 class TestHashJwt:
-    def setup(self):
+    @pytest.fixture(autouse=True)
+    def variables(self):
         self.hasher = HasherJwt(algorithm="HS256", secret="test")
 
     def test_create_hash(self):
@@ -55,7 +58,7 @@ class TestHashJwt:
         assert decode_token == public_id
 
     def test_decode_with_broken_token_should_be_raise_exception(self):
-        with pytest.raises(ThisIsNotCorrectToken):
+        with pytest.raises(ThisIsNotCorrectTokenException):
             self.hasher.make_unsecret("123")
 
     def test_decode_with_token_encode_with_another_secret(self):
