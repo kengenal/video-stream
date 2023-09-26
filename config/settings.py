@@ -2,7 +2,7 @@ import os
 from enum import StrEnum
 from functools import lru_cache
 
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class StageEnum(StrEnum):
@@ -13,17 +13,19 @@ class StageEnum(StrEnum):
 
 class Settings(BaseSettings):
     database_url: str = "sqlite:///./database.db"
+    algorytm: str = "HS256"
     password_secret: str
     token_secret: str
-    algorytm: str = "HS256"
     video_path: str
+
+    model_config = SettingsConfigDict(env_file=".env")
 
 
 class DevSettings(Settings):
     database_url: str = "sqlite:///./database.db"
-    password_secret: str = "test"
-    token_secret: str = "test"
     algorytm: str = "HS256"
+    password_secret: str
+    token_secret: str
     video_path: str
 
 
@@ -33,10 +35,10 @@ class ProdSettings(Settings):
 
 class TestSettings(Settings):
     database_url: str = "sqlite:///./test.db"
+    algorytm: str = "HS256"
     password_secret: str
     token_secret: str
-    algorytm: str = "HS256"
-    video_path: str = "/tmp/test"
+    video_path: str
 
 
 @lru_cache

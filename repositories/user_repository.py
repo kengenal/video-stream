@@ -21,3 +21,10 @@ def user_can_be_authentication(
     if user.check_password(password=password) is True:
         return user
     return None
+
+
+def create_user(db: Session, username: str, password: str) -> User:
+    user = User(username=username)
+    user.make_password(username)
+    db.add(user)
+    db.commit()
