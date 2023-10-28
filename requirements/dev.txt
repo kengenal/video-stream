@@ -1,0 +1,7 @@
+ -r base.txt
+
+
+pytest==7.4.2
+
+pytest-env==1.0.1
+httpx==0.25.0

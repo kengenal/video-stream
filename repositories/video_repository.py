@@ -15,7 +15,11 @@ def index_videos(db: Session, path: str):
     db.commit()
 
 
-def get_video_index(db: Session, q: str | None) -> List[str]:
+def get_video_index(db: Session, q: str | None) -> List[VideoIndex]:
     if q is not None:
         return db.query(VideoIndex).filter(VideoIndex.name.like(f"%{q}%")).all()
     return db.query(VideoIndex).all()
+
+
+def get_video_by_slug(db: Session, slug: str) -> VideoIndex:
+    return db.query(VideoIndex).filter(VideoIndex.slug == slug).first()
